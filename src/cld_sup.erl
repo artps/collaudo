@@ -43,7 +43,15 @@ start_link() ->
 %% @end
 %%--------------------------------------------------------------------
 init([]) ->
-    {ok, {{one_for_one, 5, 10}, []}}.
+  PoolName = cld_worker_pool,
+  PoolArgs = [{name, {local, PoolName}},
+              {worker_module, cld_worker},
+              {size, 10},
+              {max_overdlow, 20}],
+  WorkerArgs = [],
+  Pool = poolboy:child_spec(PoolName, PoolArgs, WorkerArgs),
+
+  {ok, {{one_for_one, 5, 10}, [Pool]}}.
 
 %%%===================================================================
 %%% Internal functions
