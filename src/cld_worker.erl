@@ -1,122 +1,83 @@
 -module(cld_worker).
+-behaviour(gen_fsm).
 
--behaviour(gen_server).
--behaviour(poolboy_worker).
+-include("cld.hrl").
 
-%% API
 -export([start_link/1]).
-
-%% gen_server callbacks
 -export([init/1,
-         handle_call/3,
-         handle_cast/2,
-         handle_info/2,
-         terminate/2,
-         code_change/3]).
+         state_idle/2,
+         state_idle/3,
+         state_working/2,
+         state_working/3,
+         handle_event/3,
+         handle_sync_event/4,
+         handle_info/3,
+         terminate/3,
+         code_change/4]).
 
--record(state, {}).
+-define(SERVER, ?MODULE).
+-define(IDLE_TIMEOUT, 5000).
 
-%%%===================================================================
-%%% API
-%%%===================================================================
+-record(state, { worker_id, timestamp }).
 
-%%--------------------------------------------------------------------
-%% @doc
-%% Starts the server
-%%
-%% @spec start_link() -> {ok, Pid} | ignore | {error, Error}
-%% @end
-%%--------------------------------------------------------------------
-start_link(Args) ->
-    gen_server:start_link(?MODULE, Args, []).
+start_link(WorkerId) ->
+  gen_fsm:start_link(?MODULE, [WorkerId], []).
 
-%%%===================================================================
-%%% gen_server callbacks
-%%%===================================================================
 
-%%--------------------------------------------------------------------
-%% @private
-%% @doc
-%% Initializes the server
-%%
-%% @spec init(Args) -> {ok, State} |
-%%                     {ok, State, Timeout} |
-%%                     ignore |
-%%                     {stop, Reason}
-%% @end
-%%--------------------------------------------------------------------
-init(Args) ->
-    {ok, #state{}}.
+init([WorkerId]) ->
+  State = #state{
+    worker_id = WorkerId
+  },
+  {ok, state_idle, State, ?IDLE_TIMEOUT}.
 
-%%--------------------------------------------------------------------
-%% @private
-%% @doc
-%% Handling call messages
-%%
-%% @spec handle_call(Request, From, State) ->
-%%                                   {reply, Reply, State} |
-%%                                   {reply, Reply, State, Timeout} |
-%%                                   {noreply, State} |
-%%                                   {noreply, State, Timeout} |
-%%                                   {stop, Reason, Reply, State} |
-%%                                   {stop, Reason, State}
-%% @end
-%%--------------------------------------------------------------------
-handle_call(_Request, _From, State) ->
-    Reply = ok,
-    {reply, Reply, State}.
 
-%%--------------------------------------------------------------------
-%% @private
-%% @doc
-%% Handling cast messages
-%%
-%% @spec handle_cast(Msg, State) -> {noreply, State} |
-%%                                  {noreply, State, Timeout} |
-%%                                  {stop, Reason, State}
-%% @end
-%%--------------------------------------------------------------------
-handle_cast(_Msg, State) ->
-    {noreply, State}.
+state_idle(timeout, State) ->
+  gen_fsm:send_event(self(), run),
+  {next_state, state_working, State};
 
-%%--------------------------------------------------------------------
-%% @private
-%% @doc
-%% Handling all non call/cast messages
-%%
-%% @spec handle_info(Info, State) -> {noreply, State} |
-%%                                   {noreply, State, Timeout} |
-%%                                   {stop, Reason, State}
-%% @end
-%%--------------------------------------------------------------------
-handle_info(_Info, State) ->
-    {noreply, State}.
+state_idle(_Event, _State) ->
+  {next_state, state_idle, ?IDLE_TIMEOUT}.
 
-%%--------------------------------------------------------------------
-%% @private
-%% @doc
-%% This function is called by a gen_server when it is about to
-%% terminate. It should be the opposite of Module:init/1 and do any
-%% necessary cleaning up. When it returns, the gen_server terminates
-%% with Reason. The return value is ignored.
-%%
-%% @spec terminate(Reason, State) -> void()
-%% @end
-%%--------------------------------------------------------------------
-terminate(_Reason, _State) ->
-    ok.
+state_idle(_Event, _From, State) ->
+  {reply, ok, state_idle, State}.
 
-%%--------------------------------------------------------------------
-%% @private
-%% @doc
-%% Convert process state when code is changed
-%%
-%% @spec code_change(OldVsn, State, Extra) -> {ok, NewState}
-%% @end
-%%--------------------------------------------------------------------
-code_change(_OldVsn, State, _Extra) ->
-    {ok, State}.
 
-%%%===================================================================
-%%% Internal functions
-%%%===================================================================
+state_working(run, State) ->
+  do(),
+  {next_state, state_idle, State, ?IDLE_TIMEOUT div 2}.
+
+state_working(_Event, _From, State) ->
+  {reply, ok, state_idle, State, ?IDLE_TIMEOUT}.
+
+
+handle_event(_Event, StateName, State) ->
+  {next_state, StateName, State}.
+
+handle_sync_event(_Event, _From, StateName, State) ->
+  {reply, ok, StateName, State}.
+
+handle_info(_Info, StateName, State) ->
+  {next_state, StateName, State}.
+
+terminate(_Reason, _StateName, _State) ->
+  ok.
+
+code_change(_OldVsn, StateName, State, _Extra) ->
+  {ok, StateName, State}.
+
+
+
+do() ->
+  Start = os:timestamp(),
+  timer:sleep(random:uniform(10000)),
+  Elapsed = time_diff(Start),
+  cld_stats:request(),
+  folsom_metrics:notify({request_time, Elapsed}),
+  ok.
+
+
+time_diff(Start)->
+  time_diff(Start, os:timestamp()).
+
+time_diff(Start, End) ->
+  erlang:max(0, round(timer:now_diff(End, Start) / 1000)).

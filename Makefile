@@ -26,7 +26,7 @@ clean-docs:
 	rm -f doc/edoc-info
 
 run:
-	erl -K true -A 64 -W w +P 65535 -sname cld -pa ebin -pa deps/*/ebin -boot start_sasl -s cld -config priv/cld.config
+	erl -K true -A 64 -W w +P 65535 -sname cld -pa ebin -pa deps/*/ebin -boot start_sasl -s lager -s cld -config priv/cld.config -folsom_cowboy port 8888
 
 build-plt:
 	@$(DIALYZER) --build_plt --output_plt .$(PROJECT).plt \

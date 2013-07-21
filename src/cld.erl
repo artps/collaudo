@@ -3,12 +3,9 @@
 -export([start/0]).
 
 start() ->
-  sync:go(),
+  lager:start(),
 
-  BenchName = some_name,
-  TestDir = "./test",
-
-  ensure_started([sasl, crypto]),
+  ensure_started([sasl, crypto, ranch, cowboy, folsom, folsom_cowboy]),
 
   case application:load(cld) of
     ok -> ok;
@@ -19,7 +16,7 @@ start() ->
 
   application:start(cld, permanent),
 
-  MonRef = erlang:monitor(process, whereis(cld_sup)).
+  erlang:monitor(process, whereis(cld_sup)).
 
 ensure_started(Applications) when is_list(Applications) ->
   [ensure_started(Application) || Application <- Applications];

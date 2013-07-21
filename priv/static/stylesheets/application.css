@@ -1,0 +1,117 @@
+body {
+  background: #34495E;
+  width: 100%;
+}
+
+.container {
+}
+
+.container .header {
+  height: 50px;
+  background: #2C3E50;
+  overflow: hidden;
+}
+
+.container .header .info,
+.container .diagram {
+  margin: 0 auto;
+}
+
+.container .header .info {
+  width: 1100px;
+}
+
+.container .diagram {
+  width: 960px;
+}
+
+.container .header .info div {
+  float: left;
+  height: 50px;
+  line-height: 50px;
+  padding: 0 5px;
+  width: 140px;
+  color: #fff;
+  font-family: 'Helvetica Neue', Helvetica, Arial;
+  font-size: 10px;
+  font-weight: 100;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.container .header .info .logo {
+  font-weight: 400;
+}
+
+.container .header .info .start {
+  margin-top: 12px;
+}
+
+.container .header .info div strong {
+  font-weight: 100;
+}
+
+
+.container .diagram {
+  background: #fff;
+  margin: 20px auto;
+  border-radius: 3px;
+}
+
+.axis, .horizon .title, .horizon .value {
+  font: 10px 'Helvetica Neue', Helvetica, Arial;
+  font-weight: 200;
+  text-transform: uppercase;
+}
+
+.axis text {
+  -webkit-transition: fill-opacity 250ms linear;
+}
+
+.axis path {
+  display: none;
+}
+
+.axis line {
+  stroke: #34495E;
+  shape-rendering: crispEdges;
+}
+
+.horizon {
+  overflow: hidden;
+  position: relative;
+  border-top: solid 1px #34495E;
+  border-bottom: solid 1px #34495E;
+}
+
+.horizon + .horizon {
+  border-top: none;
+}
+
+.horizon canvas {
+  display: block;
+}
+
+.horizon .title,
+.horizon .value {
+  bottom: 0;
+  line-height: 30px;
+  margin: 0 6px;
+  position: absolute;
+  text-shadow: 0 1px 0 rgba(255,255,255,.5);
+  white-space: nowrap;
+}
+
+.horizon .title {
+  left: 0;
+}
+
+.horizon .value {
+  right: 0;
+}
+
+.line {
+  background: #000;
+  opacity: .2;
+  z-index: 2;
+}

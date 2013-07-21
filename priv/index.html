@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Collaudo — Yet Another Stress Testing Tool</title>
+
+  <script type="text/javascript" src="/static/vendor/javascripts/modernizr.custom.js"></script>
+  <script type="text/javascript" src="/static/vendor/javascripts/jquery-1.10.2.min.js"></script>
+  <script type="text/javascript" src="/static/vendor/javascripts/knockout-2.2.1.js"></script>
+  <script type="text/javascript" src="/static/vendor/javascripts/d3.min.js"></script>
+  <script type="text/javascript" src="http://square.github.io/cubism/cubism.v1.js"></script>
+
+  <script type="text/javascript" src="/static/javascripts/application.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="/static/vendor/stylesheets/bootstrap.css" media="all" />
+  <link rel="stylesheet" type="text/css" href="/static/stylesheets/application.css" media="all" />
+
+</head>
+<body>
+
+  <div class="container">
+    <div class="header">
+      <div class="info" data-bind="with: meta">
+        <div class="logo">Collaudo</div>
+        <div class="clients_num"><strong>Clients:</strong> <span data-bind="text: clients">0</span></div>
+        <div class="requests_num"><strong>Requests num:</strong> <span data-bind="text: requests">0</span></div>
+        <div class="min"><strong>Min request time:</strong> <span data-bind="text: min_time">0</span></div>
+        <div class="max"><strong>Max request time:</strong> <span data-bind="text: max_time">0</span></div>
+        <div class="mean"><strong>Mean request time:</strong> <span data-bind="text: mean_time">0</span></div>
+        <div class="start"><a href="#" class="btn btn-small btn-block btn-primary" data-bind="click: $parent.boom">Boom!</a></div>
+      </div>
+    </div>
+    <div class="diagram">
+    </div>
+  </div>
+
+</body>
+</html>
