@@ -27,7 +27,7 @@
         <div class="min"><strong>Min request time:</strong> <span data-bind="text: min_time">0</span></div>
         <div class="max"><strong>Max request time:</strong> <span data-bind="text: max_time">0</span></div>
         <div class="mean"><strong>Mean request time:</strong> <span data-bind="text: mean_time">0</span></div>
-        <div class="start"><a href="#" class="btn btn-small btn-block btn-primary" data-bind="click: $parent.boom">Boom!</a></div>
+        <div class="start"><a href="#" class="btn btn-small btn-block btn-primary" data-bind="click: $parent.boom.bind($parent)">Boom!</a></div>
       </div>
     </div>
     <div class="diagram">

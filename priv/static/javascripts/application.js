@@ -170,7 +170,7 @@ Application.prototype = {
     }
   },
   boom: function(){
-    this.application.channel.send({ action: 'add_worker' });
+    this.channel.send({ action: 'add_worker' });
   }
 };
 
