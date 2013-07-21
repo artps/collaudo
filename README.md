@@ -1,7 +1,7 @@
 Collaudo
 ========
 
-Collaudo is a some http stress test tool simulation with a simple dashboard. See screenshot:
+Collaudo is a some http stress testing simulation with a simple dashboard. See screenshot:
 
 ![Collaudo](http://d.pr/i/jvtx+)
 
