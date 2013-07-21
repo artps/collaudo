@@ -1,3 +1,26 @@
+ko.extenders.numeric = function(target, precision) {
+    var result = ko.computed({
+        read: target,
+        write: function(newValue) {
+            var current = target(),
+                roundingMultiplier = Math.pow(10, precision),
+                newValueAsNum = isNaN(newValue) ? 0 : parseFloat(+newValue),
+                valueToWrite = Math.round(newValueAsNum * roundingMultiplier) / roundingMultiplier;
+ 
+            if (valueToWrite !== current) {
+                target(valueToWrite);
+            } else {
+                if (newValue !== current) {
+                    target.notifySubscribers(valueToWrite);
+                }
+            }
+        }
+    });
+    result(target());
+    return result;
+};
+
+
 var Channel = function(options) {
   this.options = options || {};
 
@@ -46,9 +69,9 @@ var MetaModel = function(application, storage) {
   this.application = application;
   this.clients   = ko.observable(0);
   this.requests  = ko.observable(0);
-  this.min_time  = ko.observable(0);
-  this.max_time  = ko.observable(0);
-  this.mean_time = ko.observable(0);
+  this.min_time  = ko.observable(0).extend({ numeric: 2 });
+  this.max_time  = ko.observable(0).extend({ numeric: 2 });
+  this.mean_time = ko.observable(0).extend({ numeric: 2 });
 
   this.min_time.subscribe(function(value) {
     storage.min.push(value);
