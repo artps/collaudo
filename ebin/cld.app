@@ -6,4 +6,5 @@
               {mod,{cld_app,[]}},
               {env,[]},
               {modules,[cld,cld_app,cld_manager,cld_stats,cld_sup,
-                        cld_websocket_handler,cld_worker,cld_worker_sup]}]}.
+                        cld_websocket_handler,cld_worker,cld_worker_sup,
+                        mochijson2,mochinum]}]}.

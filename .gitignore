@@ -3,4 +3,5 @@ deps
 *.o
 *.beam
 *.plt
+*.dump
 /log

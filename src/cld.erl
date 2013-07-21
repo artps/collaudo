@@ -5,7 +5,7 @@
 start() ->
   lager:start(),
 
-  ensure_started([sasl, crypto, ranch, cowboy, folsom, folsom_cowboy]),
+  ensure_started([sasl, crypto, ranch, cowboy, folsom]),
 
   case application:load(cld) of
     ok -> ok;
